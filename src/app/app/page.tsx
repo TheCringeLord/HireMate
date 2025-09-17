@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRightIcon, Loader2Icon, PlusIcon } from "lucide-react";
+import { ArrowRightIcon, PlusIcon } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";
 import { getCurrentUser } from "../services/clerk/lib/getCurrentUser";

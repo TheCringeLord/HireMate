@@ -37,7 +37,11 @@ import { UserAvatar } from "@/features/users/components/UserAvatar";
 type NavbarUser = { name: string; imageUrl: string };
 
 // Navigational links that depend on a jobInfoId context
-const navLinks: { name: string; href: string; Icon: ComponentType<any> }[] = [
+const navLinks: {
+  name: string;
+  href: string;
+  Icon: ComponentType<{ className?: string }>;
+}[] = [
   { name: "Interviews", href: "interviews", Icon: Speech },
   { name: "Questions", href: "questions", Icon: BookOpen },
   { name: "Resume", href: "resume", Icon: FileSliders },

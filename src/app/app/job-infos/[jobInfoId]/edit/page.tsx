@@ -1,5 +1,4 @@
 import { getCurrentUser } from "@/app/services/clerk/lib/getCurrentUser";
-import { BackLink } from "@/components/BackLink";
 import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { JobInfoTable } from "@/drizzle/schema";

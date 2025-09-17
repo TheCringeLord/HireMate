@@ -2,14 +2,13 @@ import { db } from "@/drizzle/db"
 import { JobInfoTable } from "@/drizzle/schema"
 import { getJobInfoIdTag } from "@/features/jobInfos/dbCache"
 import { canCreateQuestion } from "@/features/questions/permissions"
-
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
 import { and, eq } from "drizzle-orm"
 import { Loader2Icon } from "lucide-react"
 import { cacheTag } from "next/dist/server/use-cache/cache-tag"
 import { notFound, redirect } from "next/navigation"
 import { Suspense } from "react"
 import { NewQuestionClientPage } from "./_NewQuestionClientPage"
-import { getCurrentUser } from "@/app/services/clerk/lib/getCurrentUser"
 
 export default async function QuestionsPage({
   params,

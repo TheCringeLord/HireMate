@@ -41,7 +41,8 @@ export function generateAiQuestion({
         content: difficulty,
       },
     ],
-   
+    maxSteps: 10,
+    experimental_continueSteps: true,
     system: `You are an AI assistant that creates technical interview questions tailored to a specific job role. Your task is to generate one **realistic and relevant** technical question that matches the skill requirements of the job and aligns with the difficulty level provided by the user.
 
 Job Information:
@@ -72,7 +73,8 @@ export function generateAiQuestionFeedback({
   return streamText({
     model: google("gemini-2.5-flash"),
     prompt: answer,
-   
+    maxSteps: 10,
+    experimental_continueSteps: true,
     system: `You are an expert technical interviewer. Your job is to evaluate the candidate's answer to a technical interview question.
 
 The original question was:

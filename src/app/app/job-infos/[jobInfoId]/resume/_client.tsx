@@ -1,6 +1,5 @@
 "use client"
 
-import { aiAnalyzeSchema } from "@/app/services/ai/resumes/schemas"
 import { Skeleton } from "@/components/Skeleton"
 import {
   Accordion,
@@ -9,7 +8,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
-
 import {
   Card,
   CardContent,
@@ -19,7 +17,7 @@ import {
 } from "@/components/ui/card"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import { cn } from "@/lib/utils"
-
+import { aiAnalyzeSchema } from "@/services/ai/resumes/schemas"
 import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { DeepPartial } from "ai"
 import {

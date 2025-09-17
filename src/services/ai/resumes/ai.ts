@@ -1,26 +1,33 @@
-import { JobInfoTable } from "@/drizzle/schema";
-import { streamObject } from "ai";
-import { google } from "../models/google";
-import { aiAnalyzeSchema } from "./schemas";
-import { fileToUserMessage, devAssertModelMessages } from "../utils/messages";
+import { JobInfoTable } from "@/drizzle/schema"
+import { streamObject } from "ai"
+import { google } from "../models/google"
+import { aiAnalyzeSchema } from "./schemas"
 
 export async function analyzeResumeForJob({
   resumeFile,
   jobInfo,
 }: {
-  resumeFile: File;
+  resumeFile: File
   jobInfo: Pick<
     typeof JobInfoTable.$inferSelect,
     "title" | "experienceLevel" | "description"
-  >;
+  >
 }) {
-  const userMessage = await fileToUserMessage(resumeFile);
-  devAssertModelMessages([userMessage]);
-
   return streamObject({
     model: google("gemini-2.5-flash"),
     schema: aiAnalyzeSchema,
-    messages: [userMessage],
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "file",
+            data: await resumeFile.arrayBuffer(),
+            mimeType: resumeFile.type,
+          },
+        ],
+      },
+    ],
     system: `You are an expert resume reviewer and hiring advisor.
 
 You will receive a candidate's resume as a file in the user prompt. This resume is being used to apply for a job with the following information:
@@ -69,5 +76,5 @@ Other Guidelines:
 - Refer to the candidate as "you" in your feedback. This feedback should be written as if you were speaking directly to the candidate.
 - Stop generating output as soon you have provided the full feedback.
 `,
-  });
+  })
 }

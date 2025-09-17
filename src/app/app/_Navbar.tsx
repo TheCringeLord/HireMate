@@ -1,125 +1,87 @@
-"use client";
+"use client"
 
-// UI Components
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Button } from "@/components/ui/button";
+import {
+  BookOpenIcon,
+  
+  FileSlidersIcon,
+  Handshake,
+  LogOut,
+  SpeechIcon,
+  User,
+} from "lucide-react"
+import { ThemeToggle } from "@/components/ThemeToggle"
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { SignOutButton, useClerk } from "@clerk/nextjs"
+import Link from "next/link"
+import { UserAvatar } from "@/features/users/components/UserAvatar"
+import { useParams, usePathname } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
-// Auth / User
-import { SignOutButton, useClerk } from "@clerk/nextjs";
+const navLinks = [
+  { name: "Interviews", href: "interviews", Icon: SpeechIcon },
+  { name: "Questions", href: "questions", Icon: BookOpenIcon },
+  { name: "Resume", href: "resume", Icon: FileSlidersIcon },
+]
 
-// Icons
-import {
-  LogOut,
-  User as UserIcon,
-  Handshake,
-  BookOpen,
-  FileSliders,
-  Speech,
-} from "lucide-react";
-import type { ComponentType } from "react";
+export function Navbar({ user }: { user: { name: string; imageUrl: string } }) {
+  const { openUserProfile } = useClerk()
+  const { jobInfoId } = useParams()
+  const pathName = usePathname()
 
-// Next.js
-import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
-
-// Utils & local components
-import { cn } from "@/lib/utils";
-import { UserAvatar } from "@/features/users/components/UserAvatar";
-
-type NavbarUser = { name: string; imageUrl: string };
-
-// Navigational links that depend on a jobInfoId context
-const navLinks: {
-  name: string;
-  href: string;
-  Icon: ComponentType<{ className?: string }>;
-}[] = [
-  { name: "Interviews", href: "interviews", Icon: Speech },
-  { name: "Questions", href: "questions", Icon: BookOpen },
-  { name: "Resume", href: "resume", Icon: FileSliders },
-];
-
-export function Navbar({ user }: { user: NavbarUser }) {
-  const { openUserProfile } = useClerk();
-  const params = useParams();
-  const pathName = usePathname();
-  const jobInfoId =
-    typeof params?.jobInfoId === "string" ? params.jobInfoId : undefined;
   return (
-    <nav
-      className={cn(
-        "h-header border-b flex items-center px-4 gap-4", // layout
-        "bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/50 sticky top-0 z-40"
-      )}
-    >
-      {/* Left: Brand */}
-      <div className="flex items-center gap-2 min-w-0">
-        <Link
-          href="/app"
-          className="flex items-center gap-2 font-semibold text-lg leading-none select-none"
-        >
-          <Handshake className="size-5 text-primary" />
-          <span className="truncate">HireMate</span>
+    <nav className="h-header border-b">
+      <div className="container flex h-full items-center justify-between">
+        <Link href="/app" className="flex items-center gap-2">
+          <Handshake className="size-8 text-primary" />
+          <span className="text-xl font-bold">HireMate</span>
         </Link>
-      </div>
 
-      <div className="ml-auto flex items-center gap-2">
-        {jobInfoId &&
-          navLinks.map(({ name, href, Icon }) => {
-            const hrefPath = `/app/job-infos/${jobInfoId}/${href}`;
-            const isActive = pathName === hrefPath;
-            return (
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                key={name}
-                asChild
-                className="cursor-pointer gap-2 max-sm:hidden"
-              >
-                <Link
-                  href={hrefPath}
-                  aria-current={isActive ? "page" : undefined}
+        <div className="flex items-center gap-4">
+          {typeof jobInfoId === "string" &&
+            navLinks.map(({ name, href, Icon }) => {
+              const hrefPath = `/app/job-infos/${jobInfoId}/${href}`
+
+              return (
+                <Button
+                  variant={pathName === hrefPath ? "secondary" : "ghost"}
+                  key={name}
+                  asChild
+                  className="cursor-pointer max-sm:hidden"
                 >
-                  <Icon className="size-4" />
-                  <span>{name}</span>
-                </Link>
-              </Button>
-            );
-          })}
-        <ThemeToggle />
-        <DropdownMenu>
-          <DropdownMenuTrigger className="outline-none">
-            <UserAvatar user={user} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" sideOffset={8} className="w-48">
-            <DropdownMenuLabel className="text-xs uppercase tracking-wide opacity-60">
-              Account
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => openUserProfile?.()}
-              className="cursor-pointer"
-            >
-              <UserIcon className="size-4" /> Profile
-            </DropdownMenuItem>
-            <SignOutButton>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                variant="destructive"
-              >
-                <LogOut className="size-4" /> Logout
+                  <Link href={hrefPath}>
+                    <Icon />
+                    {name}
+                  </Link>
+                </Button>
+              )
+            })}
+
+          <ThemeToggle />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <UserAvatar user={user} />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={() => openUserProfile()}>
+                <User className="mr-2" />
+                Profile
               </DropdownMenuItem>
-            </SignOutButton>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <SignOutButton>
+                <DropdownMenuItem>
+                  <LogOut className="mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </SignOutButton>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </nav>
-  );
+  )
 }

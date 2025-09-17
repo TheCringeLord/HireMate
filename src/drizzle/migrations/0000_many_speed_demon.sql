@@ -2,8 +2,8 @@ CREATE TYPE "public"."job_infos_experience_level" AS ENUM('junior', 'mid-level',
 CREATE TYPE "public"."questions_question_difficulty" AS ENUM('easy', 'medium', 'hard');--> statement-breakpoint
 CREATE TABLE "users" (
 	"id" varchar PRIMARY KEY NOT NULL,
-	"email" varchar NOT NULL,
 	"name" varchar NOT NULL,
+	"email" varchar NOT NULL,
 	"imageUrl" varchar NOT NULL,
 	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
 	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL,

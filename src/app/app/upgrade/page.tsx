@@ -1,8 +1,7 @@
-
+import { PricingTable } from "@/services/clerk/components/PricingTable"
 import { BackLink } from "@/components/BackLink"
 import { AlertTriangle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { PricingTable } from "@/app/services/clerk/components/PricingTable"
 
 export default function UpgradePage() {
   return (

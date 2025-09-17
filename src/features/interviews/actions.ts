@@ -1,6 +1,6 @@
 "use server"
 
-
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
 import { cacheTag } from "next/dist/server/use-cache/cache-tag"
 import { getJobInfoIdTag } from "../jobInfos/dbCache"
 import { db } from "@/drizzle/db"
@@ -12,17 +12,15 @@ import { canCreateInterview } from "./permissions"
 import { PLAN_LIMIT_MESSAGE, RATE_LIMIT_MESSAGE } from "@/lib/errorToast"
 import { env } from "@/data/env/server"
 import arcjet, { tokenBucket, request } from "@arcjet/next"
-
-import { getCurrentUser } from "@/app/services/clerk/lib/getCurrentUser"
-import { generateAiInterviewFeedback } from "@/app/services/ai/interviews"
+import { generateAiInterviewFeedback } from "@/services/ai/interviews"
 
 const aj = arcjet({
   characteristics: ["userId"],
   key: env.ARCJET_KEY,
   rules: [
     tokenBucket({
-      capacity: 60,
-      refillRate: 20,
+      capacity: 12,
+      refillRate: 4,
       interval: "1d",
       mode: "LIVE",
     }),

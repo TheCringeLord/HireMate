@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRightIcon, PlusIcon } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";
-import { getCurrentUser } from "../services/clerk/lib/getCurrentUser";
+
 import { db } from "@/drizzle/db";
 import { JobInfoTable } from "@/drizzle/schema";
 import { eq, desc } from "drizzle-orm";
@@ -18,6 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { JobInfoForm } from "@/features/jobInfos/components/JobInfoForm";
 import { formatExperienceLevel } from "@/features/jobInfos/lib/formatters";
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 
 // --- Page shell ---
 export default function AppPage() {

@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db"
 import { JobInfoTable } from "@/drizzle/schema"
 import { getJobInfoIdTag } from "@/features/jobInfos/dbCache"
-
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
 import { and, eq } from "drizzle-orm"
 import { Loader2Icon } from "lucide-react"
 import { cacheTag } from "next/dist/server/use-cache/cache-tag"
@@ -12,7 +12,6 @@ import { env } from "@/data/env/server"
 import { VoiceProvider } from "@humeai/voice-react"
 import { StartCall } from "./_StartCall"
 import { canCreateInterview } from "@/features/interviews/permissions"
-import { getCurrentUser } from "@/app/services/clerk/lib/getCurrentUser"
 
 export default async function NewInterviewPage({
   params,

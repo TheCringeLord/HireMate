@@ -1,26 +1,24 @@
-import { getCurrentUser } from "@/app/services/clerk/lib/getCurrentUser";
-import { BackLink } from "@/components/BackLink";
-import { Skeleton } from "@/components/Skeleton";
-import { SuspendedItem } from "@/components/SuspendedItem";
-
-import { Badge } from "@/components/ui/badge";
+import { BackLink } from "@/components/BackLink"
+import { Skeleton } from "@/components/Skeleton"
+import { SuspendedItem } from "@/components/SuspendedItem"
+import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { db } from "@/drizzle/db";
-import { JobInfoTable } from "@/drizzle/schema";
-import { getJobInfoIdTag } from "@/features/jobInfos/dbCache";
-import { formatExperienceLevel } from "@/features/jobInfos/lib/formatters";
-
-import { and, eq } from "drizzle-orm";
-import { ArrowRightIcon } from "lucide-react";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+} from "@/components/ui/card"
+import { db } from "@/drizzle/db"
+import { JobInfoTable } from "@/drizzle/schema"
+import { getJobInfoIdTag } from "@/features/jobInfos/dbCache"
+import { formatExperienceLevel } from "@/features/jobInfos/lib/formatters"
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
+import { and, eq } from "drizzle-orm"
+import { ArrowRightIcon } from "lucide-react"
+import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import Link from "next/link"
+import { notFound } from "next/navigation"
 
 const options = [
   {
@@ -45,25 +43,25 @@ const options = [
     description: "This should only be used for minor updates.",
     href: "edit",
   },
-];
+]
 
 export default async function JobInfoPage({
   params,
 }: {
-  params: Promise<{ jobInfoId: string }>;
+  params: Promise<{ jobInfoId: string }>
 }) {
-  const { jobInfoId } = await params;
+  const { jobInfoId } = await params
 
   const jobInfo = getCurrentUser().then(
     async ({ userId, redirectToSignIn }) => {
-      if (userId == null) return redirectToSignIn();
+      if (userId == null) return redirectToSignIn()
 
-      const jobInfo = await getJobInfo(jobInfoId, userId);
-      if (jobInfo == null) return notFound();
+      const jobInfo = await getJobInfo(jobInfoId, userId)
+      if (jobInfo == null) return notFound()
 
-      return jobInfo;
+      return jobInfo
     }
-  );
+  )
 
   return (
     <div className="container my-4 space-y-4">
@@ -76,14 +74,14 @@ export default async function JobInfoPage({
               <SuspendedItem
                 item={jobInfo}
                 fallback={<Skeleton className="w-48" />}
-                result={(j) => j.name}
+                result={j => j.name}
               />
             </h1>
             <div className="flex gap-2">
               <SuspendedItem
                 item={jobInfo}
                 fallback={<Skeleton className="w-12" />}
-                result={(j) => (
+                result={j => (
                   <Badge variant="secondary">
                     {formatExperienceLevel(j.experienceLevel)}
                   </Badge>
@@ -92,10 +90,8 @@ export default async function JobInfoPage({
               <SuspendedItem
                 item={jobInfo}
                 fallback={null}
-                result={(j) => {
-                  return (
-                    j.title && <Badge variant="secondary">{j.title}</Badge>
-                  );
+                result={j => {
+                  return j.title && <Badge variant="secondary">{j.title}</Badge>
                 }}
               />
             </div>
@@ -104,13 +100,13 @@ export default async function JobInfoPage({
             <SuspendedItem
               item={jobInfo}
               fallback={<Skeleton className="w-96" />}
-              result={(j) => j.description}
+              result={j => j.description}
             />
           </p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 has-hover:*:not-hover:opacity-70">
-          {options.map((option) => (
+          {options.map(option => (
             <Link
               className="hover:scale-[1.02] transition-[transform_opacity]"
               href={`/app/job-infos/${jobInfoId}/${option.href}`}
@@ -130,14 +126,14 @@ export default async function JobInfoPage({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 async function getJobInfo(id: string, userId: string) {
-  "use cache";
-  cacheTag(getJobInfoIdTag(id));
+  "use cache"
+  cacheTag(getJobInfoIdTag(id))
 
   return db.query.JobInfoTable.findFirst({
     where: and(eq(JobInfoTable.id, id), eq(JobInfoTable.userId, userId)),
-  });
+  })
 }
